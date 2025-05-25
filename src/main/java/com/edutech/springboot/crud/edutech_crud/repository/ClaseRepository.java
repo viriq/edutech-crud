@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.edutech.springboot.crud.edutech_crud.entities.Clase;
 
-public interface ClaseRepository extends CrudRepository<Long, Clase> {
+public interface ClaseRepository extends CrudRepository<Clase, Long> {
 
 }
