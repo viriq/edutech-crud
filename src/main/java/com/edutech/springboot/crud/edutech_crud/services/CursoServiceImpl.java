@@ -23,7 +23,7 @@ public class CursoServiceImpl implements CursoService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<Curso> findById(Long id) {
         return repository.findById(id);
     }
