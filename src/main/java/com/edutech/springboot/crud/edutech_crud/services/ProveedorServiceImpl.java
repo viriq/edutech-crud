@@ -23,7 +23,7 @@ public class ProveedorServiceImpl implements ProveedorService{
         proveedorOptional.ifPresent(proveedorDb->{
             repository.delete(unProveedor);
         });
-        return Optional.empty();
+        return proveedorOptional;
     }
 
     @Override
