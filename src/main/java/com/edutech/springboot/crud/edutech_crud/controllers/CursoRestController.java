@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,14 +16,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edutech.springboot.crud.edutech_crud.entities.Curso;
+import com.edutech.springboot.crud.edutech_crud.repository.CursoRepository;
 import com.edutech.springboot.crud.edutech_crud.services.CursoService;
 
 @RestController
 @RequestMapping("api/cursos")
 public class CursoRestController {
 
+    private final CursoRepository cursoRepository;
+
     @Autowired
     private CursoService cursoService;
+
+    CursoRestController(CursoRepository cursoRepository) {
+        this.cursoRepository = cursoRepository;
+    }
 
     @GetMapping
     public List<Curso> list() {
@@ -58,6 +66,17 @@ public class CursoRestController {
             return ResponseEntity.ok(cursoModificada);
         }
 
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminar(@PathVariable long id) {
+        Curso unCurso = new Curso();
+        unCurso.setId(id);
+        Optional<Curso> optionalCurso = cursoService.delete(unCurso);
+        if (optionalCurso.isPresent()) {
+            return ResponseEntity.ok(optionalCurso.orElseThrow());
+        }
         return ResponseEntity.notFound().build();
     }
 
