@@ -20,7 +20,7 @@ import com.edutech.springboot.crud.edutech_crud.entities.Usuario;
 import com.edutech.springboot.crud.edutech_crud.services.UsuarioService;
 
 @RestController
-@RequestMapping("api/usuario")
+@RequestMapping("api/usuarios")
 public class UsuarioRestController {
 
     @Autowired
