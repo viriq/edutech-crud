@@ -38,7 +38,7 @@ public class CursoServiceImpl implements CursoService {
     @Transactional
     public Optional<Curso> delete(Curso unCurso) {
         Optional<Curso> cursoOptional = repository.findById(unCurso.getId());
-        cursoOptional.ifPresent(cursoDb -> {
+        cursoOptional.ifPresent(cursDb -> {
             repository.delete(unCurso);
         });
         return cursoOptional;
