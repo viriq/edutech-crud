@@ -16,21 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edutech.springboot.crud.edutech_crud.entities.Curso;
-import com.edutech.springboot.crud.edutech_crud.repository.CursoRepository;
 import com.edutech.springboot.crud.edutech_crud.services.CursoService;
 
 @RestController
 @RequestMapping("api/cursos")
 public class CursoRestController {
 
-    private final CursoRepository cursoRepository;
-
     @Autowired
     private CursoService cursoService;
-
-    CursoRestController(CursoRepository cursoRepository) {
-        this.cursoRepository = cursoRepository;
-    }
 
     @GetMapping
     public List<Curso> list() {
