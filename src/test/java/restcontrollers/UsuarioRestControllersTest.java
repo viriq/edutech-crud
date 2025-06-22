@@ -66,6 +66,14 @@ public class UsuarioRestControllersTest {
 
     }
 
+    @Test
+    public void usuarioNoExisteTest() throws Exception{
+        when(usuarioserviceimpl.findById(10L)).thenReturn(Optional.empty());
+        mockmvc.perform(get("/api/usuarios/10")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
     
 
 
