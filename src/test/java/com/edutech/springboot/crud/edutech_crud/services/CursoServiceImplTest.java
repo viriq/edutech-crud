@@ -1,6 +1,7 @@
 package com.edutech.springboot.crud.edutech_crud.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,7 +42,7 @@ public class CursoServiceImplTest {
         List<Curso> response = cursoService.findByAll();
         // esperamos que traiga los 3 resultados que se ingresaron en chargeCursos()
         assertEquals(3, response.size());
-        // verificamos que se llame al método findByAll una sola vez
+        // verificar que el método cursoRepository.findAll() se haya llamado
         verify(cursoRepository, times(1)).findAll();
     }
 
@@ -65,7 +66,7 @@ public class CursoServiceImplTest {
         assertTrue(respuesta.isPresent());  // existe?
         assertEquals(id, respuesta.get().getId());  // misma id?
 
-        // verificar que el método findById se haya llamado solo una vez en el repositorio
+        // verificar que el método cursoRepository.findById() se haya llamado
         verify(cursoRepository, times(1)).findById(id);
     }
 
@@ -80,8 +81,28 @@ public class CursoServiceImplTest {
         Optional<Curso> respuesta = cursoService.findById(id);
         assertTrue(respuesta.isEmpty());
 
-        // verificar que el método cursoRepository.findById() se haya llamado solo una vez
+        // verificar que el método cursoRepository.findById() se haya llamado
         verify(cursoRepository, times(1)).findById(id);
+    }
+
+    @Test
+    public void saveTest() {
+        // inicializa las instancias de Curso para esta prueba
+        // la idea: se ingresa un curso sin ID (enviado por el cliente, por ejemplo), y se retorna el mismo curso con una ID asignada
+        Curso inputCurso = new Curso(null, "Arte y Código", "Taller de programación creativa con Python y arte generativo.", "Martín Reyes");
+        Curso outputCurso = new Curso(45L, inputCurso.getTitulo(), inputCurso.getDescripción(), inputCurso.getNombreInstructor());
+
+        // mockea el repositodio para que, al ingresar inputCurso, retorne outputCurso
+        when(cursoRepository.save(inputCurso)).thenReturn(outputCurso);
+
+        // verifica que la respuesta sea correcta
+        Curso respuesta = cursoService.save(inputCurso);
+        assertNotNull(respuesta);  // objeto existe
+        assertNotNull(respuesta.getTitulo());  // objeto tiene el mismo título
+        assertNotNull(respuesta.getId());  // objeto tiene ID
+
+        // verificar que el método cursoRepository.save() se haya llamado
+        verify(cursoRepository, times(1)).save(inputCurso);
     }
 
     public void chargeCursos() {
