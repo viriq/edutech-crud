@@ -1,9 +1,12 @@
 package restcontrollers;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
+import javax.print.attribute.standard.Media;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,6 +47,22 @@ public class UsuarioRestControllersTest {
         mockmvc.perform(get("/api/usuarios")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void verunUsuarioTest(){
+        Usuario unUsuario = new Usuario(1L, "Maria Gonzales","maria.gonza@gmail.com", "1234Segura!", "Estudiante");
+        try{
+            when(usuarioserviceimpl.findById(1L)).thenReturn(Optional.of(unUsuario));
+            mockmvc.perform(get("/api/usuarios/1")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+                
+        }
+        catch (Exception ex){
+            fail("El testing lanzó un error" + ex.getMessage());
+        }
 
     }
 
