@@ -49,7 +49,4 @@ public class UsuarioServiceImpl implements UsuarioService{
         return userOpcional;
     }
 
-
- 
-
 }
