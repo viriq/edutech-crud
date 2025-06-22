@@ -39,7 +39,7 @@ public class CursoServiceImpl implements CursoService {
     public Optional<Curso> delete(Curso unCurso) {
         Optional<Curso> cursoOptional = repository.findById(unCurso.getId());
         cursoOptional.ifPresent(cursoDb -> {
-            repository.delete(unCurso);
+            repository.delete(cursoDb);
         });
         return cursoOptional;
     }
