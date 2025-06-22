@@ -99,7 +99,7 @@ public class CursoServiceImplTest {
         Curso respuesta = cursoService.save(inputCurso);
         assertNotNull(respuesta);  // objeto existe
         assertNotNull(respuesta.getTitulo());  // objeto tiene el mismo título
-        assertNotNull(respuesta.getId());  // objeto tiene ID
+        assertEquals(outputCurso.getId(), respuesta.getId());  // objeto tiene ID
 
         // verificar que el método cursoRepository.save() se haya llamado
         verify(cursoRepository, times(1)).save(inputCurso);
