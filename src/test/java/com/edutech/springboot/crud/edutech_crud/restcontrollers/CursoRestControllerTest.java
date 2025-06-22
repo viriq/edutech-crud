@@ -1,8 +1,12 @@
 package com.edutech.springboot.crud.edutech_crud.restcontrollers;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.edutech.springboot.crud.edutech_crud.entities.Curso;
 import com.edutech.springboot.crud.edutech_crud.services.CursoServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,6 +41,20 @@ public class CursoRestControllerTest {
         mockMvc.perform(get("/api/cursos")
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
+    }
+
+    @Test
+    public void verCursoTest() {
+        Curso unCurso = new Curso(73L, "Ciberseguridad Básica", "Curso básico de ciberseguridad y protección de datos personales.", "Fernando Salinas");
+        try {
+            when(cursoServiceImpl.findById(73L)).thenReturn(Optional.of(unCurso));
+            mockMvc.perform(get("/api/cursos/73")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        }
+        catch(Exception ex) {
+            fail("Test 'verCursoTest' lanzó un error: " + ex.getMessage());
+        }
     }
 
 }
