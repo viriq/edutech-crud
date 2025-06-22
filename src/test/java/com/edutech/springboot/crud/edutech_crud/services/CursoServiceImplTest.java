@@ -59,13 +59,28 @@ public class CursoServiceImplTest {
         // mockea el repositorio para que retorne el curso con la ID correspondiente
         when(cursoRepository.findById(id)).thenReturn(Optional.of(unCurso));
 
-        // valida la validez de la respuesta
+        // verifica que la respuesta sea correcta
 
         Optional<Curso> respuesta = cursoService.findById(id);
         assertTrue(respuesta.isPresent());  // existe?
         assertEquals(id, respuesta.get().getId());  // misma id?
 
         // verificar que el método findById se haya llamado solo una vez en el repositorio
+        verify(cursoRepository, times(1)).findById(id);
+    }
+
+    @Test
+    public void findByIdNotFoundTest() {
+        // mockea el repositorio para que retorne un Optional vacio
+        Long id = 47L;
+        when(cursoRepository.findById(id)).thenReturn(Optional.empty());
+
+        // verifica que la respuesta sea correcta
+
+        Optional<Curso> respuesta = cursoService.findById(id);
+        assertTrue(respuesta.isEmpty());
+
+        // verificar que el método cursoRepository.findById() se haya llamado solo una vez
         verify(cursoRepository, times(1)).findById(id);
     }
 
