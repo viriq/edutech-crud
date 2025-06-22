@@ -1,6 +1,7 @@
 package restcontrollers;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -10,6 +11,8 @@ import javax.print.attribute.standard.Media;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 
 
 import org.junit.jupiter.api.Test;
@@ -74,14 +77,16 @@ public class UsuarioRestControllersTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void crearUsuarioTest() throws Exception{
+        Usuario unUsuario = new Usuario(null, "Oliver Sykes", "bmthsucks@gmail.com", "1tn3v3r3nd5", "Profesor");
+        Usuario otroUsuario = new Usuario(4L, "Matty Healy", "1975sucks@gmail.com", "l0v1ngs0m30n3", "Estudiante"); 
+        when(usuarioserviceimpl.save(any(Usuario.class))).thenReturn(otroUsuario);
+        mockmvc.perform(post("/api/usuarios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(unUsuario)))
+                .andExpect(status().isCreated());
+    }
     
-
-
-
-
-
-
-
-
 
 }
