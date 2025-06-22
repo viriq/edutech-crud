@@ -50,7 +50,6 @@ public class CursoServiceImplTest {
     public void findByIdTest() {
         // inicializa una instancia de Curso para esta prueba
         Long id = 25L;
-
         String titulo = "Programación Avanzada";
         String descripcion = "Curso sobre conceptos avanzados de programación en Java";
         String nombreInstructor = "Carlos Méndez";
@@ -61,7 +60,6 @@ public class CursoServiceImplTest {
         when(cursoRepository.findById(id)).thenReturn(Optional.of(unCurso));
 
         // verifica que la respuesta sea correcta
-
         Optional<Curso> respuesta = cursoService.findById(id);
         assertTrue(respuesta.isPresent());  // existe?
         assertEquals(id, respuesta.get().getId());  // misma id?
@@ -101,8 +99,26 @@ public class CursoServiceImplTest {
         assertNotNull(respuesta.getTitulo());  // objeto tiene el mismo título
         assertEquals(outputCurso.getId(), respuesta.getId());  // objeto tiene ID
 
-        // verificar que el método cursoRepository.save() se haya llamado
+        // verifica que el método cursoRepository.save() se haya llamado
         verify(cursoRepository, times(1)).save(inputCurso);
+    }
+
+    @Test
+    public void deleteTest() {
+        // inicializa una instancia de Curso para esta prueba
+        Curso unCurso = new Curso(73L, "Ciberseguridad Básica", "Curso básico de ciberseguridad y protección de datos personales.", "Fernando Salinas");
+
+        // mockea el repositorio para que retorne la misma instancia de Curso, dentro de un Optional
+        when(cursoRepository.findById(unCurso.getId())).thenReturn(Optional.of(unCurso));
+
+        // verifica que la respuesta sea correcta
+        Optional<Curso> respuesta = cursoService.delete(unCurso);
+        assertTrue(respuesta.isPresent());  // objeto existe
+        assertEquals(unCurso.getId(), respuesta.get().getId());  // objeto tiene la misma ID
+
+        // verifica que los métodos se hayan llamado en cursoRepository
+        verify(cursoRepository, times(1)).findById(unCurso.getId());
+        verify(cursoRepository, times(1)).delete(unCurso);
     }
 
     public void chargeCursos() {
