@@ -1,12 +1,14 @@
 package com.edutech.springboot.crud.edutech_crud.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +43,30 @@ public class CursoServiceImplTest {
         assertEquals(3, response.size());
         // verificamos que se llame al método findByAll una sola vez
         verify(cursoRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void findByIdTest() {
+        // inicializa una instancia de Curso para esta prueba
+        Long id = 25L;
+
+        String titulo = "Programación Avanzada";
+        String descripcion = "Curso sobre conceptos avanzados de programación en Java";
+        String nombreInstructor = "Carlos Méndez";
+
+        Curso unCurso = new Curso(id, titulo, descripcion, nombreInstructor);
+
+        // mockea el repositorio para que retorne el curso con la ID correspondiente
+        when(cursoRepository.findById(id)).thenReturn(Optional.of(unCurso));
+
+        // valida la validez de la respuesta
+
+        Optional<Curso> respuesta = cursoService.findById(id);
+        assertTrue(respuesta.isPresent());  // existe?
+        assertEquals(id, respuesta.get().getId());  // misma id?
+
+        // verificar que el método findById se haya llamado solo una vez en el repositorio
+        verify(cursoRepository, times(1)).findById(id);
     }
 
     public void chargeCursos() {
