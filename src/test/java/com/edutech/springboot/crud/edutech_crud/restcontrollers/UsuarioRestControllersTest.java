@@ -6,9 +6,14 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
+import javax.print.attribute.standard.Media;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.mockito.ArgumentMatchers.any;
 
 
@@ -21,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.edutech.springboot.crud.edutech_crud.entities.Curso;
 import com.edutech.springboot.crud.edutech_crud.entities.Usuario;
 import com.edutech.springboot.crud.edutech_crud.services.UsuarioServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,6 +91,75 @@ public class UsuarioRestControllersTest {
                 .content(objectMapper.writeValueAsString(unUsuario)))
                 .andExpect(status().isCreated());
     }
+
+    @Test
+    public void listUsuariosTest() throws Exception {
+        when(usuarioserviceimpl.findByAll()).thenReturn(usuarioLista);
+        mockmvc.perform(get("/api/usuarios"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void usuarioModificarTest() throws Exception {
+        Usuario existingUsuario = new Usuario(22L, "Felipe Perez", "fepe@live.cl", "fepe123", "Estudiante");
+        Usuario unUsuario = new Usuario(null, existingUsuario.getNombreCompleto(), existingUsuario.getEmail(), existingUsuario.getContrasena(), existingUsuario.getTipoUsuario());
+        Usuario otroUsuario = new Usuario(22L, unUsuario.getNombreCompleto(), unUsuario.getEmail(), unUsuario.getContrasena(), "Profesor");
+        when(usuarioserviceimpl.findById(22L)).thenReturn(Optional.of(existingUsuario));
+        when(usuarioserviceimpl.save(any(Usuario.class))).thenReturn(otroUsuario);
+
+        mockmvc.perform(put("/api/usuarios/22")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(unUsuario)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(22L))
+            .andExpect(jsonPath("$.nombreCompleto").value(existingUsuario.getNombreCompleto()))
+            .andExpect(jsonPath("$.tipoUsuarior").value(otroUsuario.getTipoUsuario()));
+    }
+
+
+    @Test
+    public void usuarioModificarNoEncontradoTest() throws Exception {
+        Usuario unUsuario = new Usuario(23L, "Felipe Perez", "fepe@live.cl", "fepe123", "Profesor");
+
+        when(usuarioserviceimpl.findById(null)).thenReturn(Optional.empty());
+
+        mockmvc.perform(put("/api/usuarios/23")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(unUsuario)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void usuarioDeleteTest() throws Exception{
+        Usuario otroUsuario = new Usuario(24L, "Felipe Perez", "fepe@live.cl", "fepe123", "Profesor");
+
+        when(usuarioserviceimpl.delete(any(Usuario.class))).thenReturn(Optional.of(otroUsuario));
+
+        mockmvc.perform(delete("/api/usuarios/24"))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void usuarioDeleteNoEncontrado() throws Exception{
+
+        when(usuarioserviceimpl.delete(any(Usuario.class))).thenReturn(Optional.empty());
+        mockmvc.perform(delete("/api/usuarios/78"))
+        .andExpect(status().isOk());
+    }
+
+
+
+
+
     
+
+
+
+   
+    
+
+
 
 }
