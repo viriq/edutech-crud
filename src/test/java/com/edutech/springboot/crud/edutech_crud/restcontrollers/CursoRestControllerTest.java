@@ -90,7 +90,6 @@ public class CursoRestControllerTest {
             .andExpect(jsonPath("$.id").value(45L))
             .andExpect(jsonPath("$.titulo").value(existingCurso.getTitulo()))
             .andExpect(jsonPath("$.nombreInstructor").value(inputCurso.getNombreInstructor()));
-
     }
 
     @Test
@@ -115,6 +114,13 @@ public class CursoRestControllerTest {
 
         mockMvc.perform(delete("/api/cursos/" + id))
             .andExpect(status().isOk());
+    }
+
+    @Test
+    public void cursoEliminarNotFoundTest() throws Exception {
+        when(cursoServiceImpl.delete(any(Curso.class))).thenReturn(Optional.empty());
+        mockMvc.perform(delete("/api/cursos/27"))
+            .andExpect(status().isNotFound());
     }
 
 }
