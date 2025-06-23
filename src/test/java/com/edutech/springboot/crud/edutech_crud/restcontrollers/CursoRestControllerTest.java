@@ -21,6 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.edutech.springboot.crud.edutech_crud.entities.Curso;
+import com.edutech.springboot.crud.edutech_crud.factory.CursoTestFactory;
 import com.edutech.springboot.crud.edutech_crud.services.CursoServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,6 +39,7 @@ public class CursoRestControllerTest {
     private CursoServiceImpl cursoServiceImpl;
 
     private List<Curso> cursosLista;
+    private CursoTestFactory cursoTestFactory = new CursoTestFactory();
 
     @Test
     public void listCursosTest() throws Exception {
@@ -48,23 +50,25 @@ public class CursoRestControllerTest {
 
     @Test
     public void verCursoTest() throws Exception {
-        Curso unCurso = new Curso(73L, "Ciberseguridad Básica", "Curso básico de ciberseguridad y protección de datos personales.", "Fernando Salinas");
-        when(cursoServiceImpl.findById(73L)).thenReturn(Optional.of(unCurso));
+        Long id = 73L;
+        Curso curso = cursoTestFactory.defaultCurso(id);
+        when(cursoServiceImpl.findById(73L)).thenReturn(Optional.of(curso));
         mockMvc.perform(get("/api/cursos/73"))
             .andExpect(status().isOk());
     }
 
     @Test
     public void cursoNoExisteTest() throws Exception {
-        when(cursoServiceImpl.findById(96L)).thenReturn(Optional.empty());
+        when(cursoServiceImpl.findById(73L)).thenReturn(Optional.empty());
         mockMvc.perform(get("/api/cursos/73"))
             .andExpect(status().isNotFound());
     }
 
     @Test
     public void cursoCrearTest() throws Exception {
-        Curso inputCurso = new Curso(null, "Arte y Código", "Taller de programación creativa con Python y arte generativo.", "Martín Reyes");
-        Curso outputCurso = new Curso(45L, inputCurso.getTitulo(), inputCurso.getDescripción(), inputCurso.getNombreInstructor());
+        Long id = 45L;
+        Curso inputCurso = cursoTestFactory.inputCurso();
+        Curso outputCurso = cursoTestFactory.defaultCurso(id);
         when(cursoServiceImpl.save(any(Curso.class))).thenReturn(outputCurso);
         mockMvc.perform(post("/api/cursos")
             .contentType(MediaType.APPLICATION_JSON)
@@ -75,9 +79,9 @@ public class CursoRestControllerTest {
     @Test
     public void cursoModificarTest() throws Exception {
         Long id = 45L;
-        Curso existingCurso = new Curso(id, "Arte y Código", "Taller de programación creativa con Python y arte generativo.", "Martín Reyes");
-        Curso inputCurso = new Curso(null, existingCurso.getTitulo(), existingCurso.getDescripción(), "Richard Ericson");
-        Curso outputCurso = new Curso(id, inputCurso.getTitulo(), inputCurso.getDescripción(), inputCurso.getNombreInstructor());
+        Curso existingCurso = cursoTestFactory.defaultCurso(id);
+        Curso inputCurso = cursoTestFactory.inputUpdateCurso();
+        Curso outputCurso = cursoTestFactory.outputUpdateCurso(id);
 
         when(cursoServiceImpl.findById(id)).thenReturn(Optional.of(existingCurso));
         when(cursoServiceImpl.save(any(Curso.class))).thenReturn(outputCurso);
@@ -87,7 +91,7 @@ public class CursoRestControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(inputCurso)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(45L))
+            .andExpect(jsonPath("$.id").value(id))
             .andExpect(jsonPath("$.titulo").value(existingCurso.getTitulo()))
             .andExpect(jsonPath("$.nombreInstructor").value(inputCurso.getNombreInstructor()));
     }
@@ -95,7 +99,7 @@ public class CursoRestControllerTest {
     @Test
     public void cursoModificarNotFoundTest() throws Exception {
         Long id = 97L;
-        Curso inputCurso = new Curso(null, "Arte y Código", "Taller de programación creativa con Python y arte generativo.", "Richard Ericson");
+        Curso inputCurso = cursoTestFactory.inputUpdateCurso();
 
         when(cursoServiceImpl.findById(id)).thenReturn(Optional.empty());
 
@@ -108,7 +112,7 @@ public class CursoRestControllerTest {
     @Test
     public void cursoEliminarTest() throws Exception {
         Long id = 57L;
-        Curso outputCurso = new Curso(id, "Arte y Código", "Taller de programación creativa con Python y arte generativo", "Richard Ericson");
+        Curso outputCurso = cursoTestFactory.defaultCurso(id);
 
         when(cursoServiceImpl.delete(any(Curso.class))).thenReturn(Optional.of(outputCurso));
 
