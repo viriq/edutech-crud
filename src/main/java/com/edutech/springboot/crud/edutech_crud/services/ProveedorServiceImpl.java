@@ -21,7 +21,7 @@ public class ProveedorServiceImpl implements ProveedorService{
     public Optional<Proveedor> delete(Proveedor unProveedor) {
         Optional<Proveedor> proveedorOptional = repository.findById(unProveedor.getId());
         proveedorOptional.ifPresent(proveedorDb->{
-            repository.delete(unProveedor);
+            repository.delete(proveedorDb);
         });
         return proveedorOptional;
     }

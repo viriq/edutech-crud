@@ -44,12 +44,9 @@ public class UsuarioServiceImpl implements UsuarioService{
     public Optional<Usuario> delete(Usuario unUsuario) {
         Optional<Usuario> userOpcional = repository.findById(unUsuario.getId());
         userOpcional.ifPresent(usuarioDb->{
-            repository.delete(unUsuario);
+            repository.delete(usuarioDb);
         });
         return userOpcional;
     }
-
-
- 
 
 }
