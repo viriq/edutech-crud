@@ -1,4 +1,4 @@
-package usuariotest.services;
+package com.edutech.springboot.crud.edutech_crud.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -16,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 
 import com.edutech.springboot.crud.edutech_crud.entities.Usuario;
 import com.edutech.springboot.crud.edutech_crud.repository.UsuarioRepository;
-import com.edutech.springboot.crud.edutech_crud.services.UsuarioServiceImpl;
 
 public class UsuarioServiceImplTest {
 

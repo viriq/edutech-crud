@@ -1,12 +1,10 @@
-package restcontrollers;
+package com.edutech.springboot.crud.edutech_crud.restcontrollers;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-
-import javax.print.attribute.standard.Media;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
