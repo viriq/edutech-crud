@@ -1,6 +1,5 @@
 package com.edutech.springboot.crud.edutech_crud.restcontrollers;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
