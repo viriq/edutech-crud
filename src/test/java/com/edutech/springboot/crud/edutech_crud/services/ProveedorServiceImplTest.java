@@ -25,7 +25,7 @@ public class ProveedorServiceImplTest {
     @Mock
     private ProveedorRepository repository;
 
-    List<Proveedor> list = new ArrayList<Proveedor>();
+    List<Proveedor> list = new ArrayList<>();
 
     @BeforeEach
     public void init() {
