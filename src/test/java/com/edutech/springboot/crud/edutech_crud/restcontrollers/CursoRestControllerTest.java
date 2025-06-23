@@ -59,6 +59,15 @@ public class CursoRestControllerTest {
         }
     }
 
+
+    @Test
+    public void cursoNoExisteTest() throws Exception {
+        when(cursoServiceImpl.findById(96L)).thenReturn(Optional.empty());
+        mockMvc.perform(get("/api/cursos/73")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+    }
+
     @Test
     public void cursoSaveTest() throws Exception {
         Curso inputCurso = new Curso(null, "Arte y Código", "Taller de programación creativa con Python y arte generativo.", "Martín Reyes");
