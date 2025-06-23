@@ -3,6 +3,7 @@ package com.edutech.springboot.crud.edutech_crud.restcontrollers;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -108,6 +109,18 @@ public class CursoRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(inputCurso)))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void cursoEliminarTest() throws Exception {
+        Long id = 57L;
+        Curso outputCurso = new Curso(id, "Arte y Código", "Taller de programación creativa con Python y arte generativo", "Richard Ericson");
+
+        when(cursoServiceImpl.delete(any(Curso.class))).thenReturn(Optional.of(outputCurso));
+
+        mockMvc.perform(delete("/api/cursos/" + id)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
     }
 
 }
