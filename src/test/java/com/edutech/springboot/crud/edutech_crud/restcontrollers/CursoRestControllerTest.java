@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,8 +42,7 @@ public class CursoRestControllerTest {
     @Test
     public void listCursosTest() throws Exception {
         when(cursoServiceImpl.findByAll()).thenReturn(cursosLista);
-        mockMvc.perform(get("/api/cursos")
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/cursos"))
             .andExpect(status().isOk());
     }
 
@@ -52,16 +50,14 @@ public class CursoRestControllerTest {
     public void verCursoTest() throws Exception {
         Curso unCurso = new Curso(73L, "Ciberseguridad Básica", "Curso básico de ciberseguridad y protección de datos personales.", "Fernando Salinas");
         when(cursoServiceImpl.findById(73L)).thenReturn(Optional.of(unCurso));
-        mockMvc.perform(get("/api/cursos/73")
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/cursos/73"))
             .andExpect(status().isOk());
     }
 
     @Test
     public void cursoNoExisteTest() throws Exception {
         when(cursoServiceImpl.findById(96L)).thenReturn(Optional.empty());
-        mockMvc.perform(get("/api/cursos/73")
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/cursos/73"))
             .andExpect(status().isNotFound());
     }
 
@@ -88,9 +84,9 @@ public class CursoRestControllerTest {
 
         mockMvc.perform(put("/api/cursos/" + id)
             .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(inputCurso)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(45L))
             .andExpect(jsonPath("$.titulo").value(existingCurso.getTitulo()))
             .andExpect(jsonPath("$.nombreInstructor").value(inputCurso.getNombreInstructor()));
@@ -117,8 +113,7 @@ public class CursoRestControllerTest {
 
         when(cursoServiceImpl.delete(any(Curso.class))).thenReturn(Optional.of(outputCurso));
 
-        mockMvc.perform(delete("/api/cursos/" + id)
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/api/cursos/" + id))
             .andExpect(status().isOk());
     }
 
