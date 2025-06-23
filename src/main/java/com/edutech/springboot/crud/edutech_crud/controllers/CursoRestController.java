@@ -65,6 +65,12 @@ public class CursoRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(curso));
     }
 
+    @Operation(summary = "Modificar un curso", description = "Actualiza los datos del curso con datos proporcionados")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Curso modificado",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Curso.class))),
+        @ApiResponse(responseCode = "404", description = "Curso no encontrado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> modificar(@PathVariable long id, @RequestBody Curso curso) {
         Optional<Curso> cursoOptional = cursoService.findById(id);
@@ -83,6 +89,12 @@ public class CursoRestController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Eliminar un curso", description = "Elimina un curso específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Curso eliminado",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Curso.class))),
+        @ApiResponse(responseCode = "404", description = "Curso no encontrado")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable long id) {
         Curso unCurso = new Curso();
