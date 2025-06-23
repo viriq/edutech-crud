@@ -57,6 +57,9 @@ public class CursoRestController {
         return ResponseEntity.notFound().build();
     }
     
+    @Operation(summary = "Crear un nuevo curso", description = "Crea un curso con los datos proporcionados")
+    @ApiResponse(responseCode = "201", description = "Curso creado correctamente",
+        content = @Content(mediaType = "application/json", schema = @Schema(implementation = Curso.class)))
     @PostMapping
     public ResponseEntity<Curso> crear(@RequestBody Curso curso) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(curso));
