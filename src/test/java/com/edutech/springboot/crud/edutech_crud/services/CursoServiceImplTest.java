@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.edutech.springboot.crud.edutech_crud.entities.Curso;
+import com.edutech.springboot.crud.edutech_crud.factory.CursoTestFactory;
 import com.edutech.springboot.crud.edutech_crud.repository.CursoRepository;
 
 public class CursoServiceImplTest {
@@ -29,6 +30,7 @@ public class CursoServiceImplTest {
     private CursoRepository cursoRepository;
 
     List<Curso> cursoList = new ArrayList<Curso>();
+    CursoTestFactory cursoTestFactory = new CursoTestFactory();
 
     @BeforeEach
     public void init() {
@@ -50,14 +52,10 @@ public class CursoServiceImplTest {
     public void findByIdTest() {
         // inicializa una instancia de Curso para esta prueba
         Long id = 25L;
-        String titulo = "Programación Avanzada";
-        String descripcion = "Curso sobre conceptos avanzados de programación en Java";
-        String nombreInstructor = "Carlos Méndez";
-
-        Curso unCurso = new Curso(id, titulo, descripcion, nombreInstructor);
+        Curso curso = cursoTestFactory.defaultCurso(id);
 
         // mockea el repositorio para que retorne el curso con la ID correspondiente
-        when(cursoRepository.findById(id)).thenReturn(Optional.of(unCurso));
+        when(cursoRepository.findById(id)).thenReturn(Optional.of(curso));
 
         // verifica que la respuesta sea correcta
         Optional<Curso> respuesta = cursoService.findById(id);
@@ -87,17 +85,18 @@ public class CursoServiceImplTest {
     public void saveTest() {
         // inicializa las instancias de Curso para esta prueba
         // la idea: se ingresa un curso sin ID (enviado por el cliente, por ejemplo), y se retorna el mismo curso con una ID asignada
-        Curso inputCurso = new Curso(null, "Arte y Código", "Taller de programación creativa con Python y arte generativo.", "Martín Reyes");
-        Curso outputCurso = new Curso(45L, inputCurso.getTitulo(), inputCurso.getDescripción(), inputCurso.getNombreInstructor());
-
+        Long id = 45L;
+        Curso inputCurso = cursoTestFactory.inputCurso();
+        Curso outputCurso = cursoTestFactory.defaultCurso(id);
+        
         // mockea el repositodio para que, al ingresar inputCurso, retorne outputCurso
         when(cursoRepository.save(inputCurso)).thenReturn(outputCurso);
 
         // verifica que la respuesta sea correcta
         Curso respuesta = cursoService.save(inputCurso);
         assertNotNull(respuesta);  // objeto existe
-        assertNotNull(respuesta.getTitulo());  // objeto tiene el mismo título
-        assertEquals(outputCurso.getId(), respuesta.getId());  // objeto tiene ID
+        assertNotNull(respuesta.getTitulo());  // objeto tiene un título
+        assertEquals(id, respuesta.getId());  // objeto tiene ID
 
         // verifica que el método cursoRepository.save() se haya llamado
         verify(cursoRepository, times(1)).save(inputCurso);
@@ -106,26 +105,27 @@ public class CursoServiceImplTest {
     @Test
     public void deleteTest() {
         // inicializa una instancia de Curso para esta prueba
-        Curso unCurso = new Curso(73L, "Ciberseguridad Básica", "Curso básico de ciberseguridad y protección de datos personales.", "Fernando Salinas");
+        Long id = 97L;
+        Curso curso = cursoTestFactory.defaultCurso(id);
 
         // mockea el repositorio para que retorne la misma instancia de Curso, dentro de un Optional
-        when(cursoRepository.findById(unCurso.getId())).thenReturn(Optional.of(unCurso));
+        when(cursoRepository.findById(id)).thenReturn(Optional.of(curso));
 
         // verifica que la respuesta sea correcta
-        Optional<Curso> respuesta = cursoService.delete(unCurso);
+        Optional<Curso> respuesta = cursoService.delete(curso);
         assertTrue(respuesta.isPresent());  // objeto existe
-        assertEquals(unCurso.getId(), respuesta.get().getId());  // objeto tiene la misma ID
+        assertEquals(id, respuesta.get().getId());  // objeto tiene la misma ID
 
         // verifica que los métodos se hayan llamado en cursoRepository
-        verify(cursoRepository, times(1)).findById(unCurso.getId());
-        verify(cursoRepository, times(1)).delete(unCurso);
+        verify(cursoRepository, times(1)).findById(id);
+        verify(cursoRepository, times(1)).delete(curso);
     }
 
     public void chargeCursos() {
         cursoList.addAll(List.of(
-            new Curso(14l, "Bases de Datos", "Curso introductorio sobre bases de datos relacionales.", "Laura Gómez"),
-            new Curso(47l, "Desarrollo Web Frontend", "Aprende los fundamentos del desarrollo web moderno.", "Carlos Muñoz"),
-            new Curso(92l, "Edición de Audio Digital", "Curso práctico de edición de audio digital.", "Ana Pereira")
+            new Curso(14L, "Bases de Datos", "Curso introductorio sobre bases de datos relacionales.", "Laura Gómez"),
+            new Curso(47L, "Desarrollo Web Frontend", "Aprende los fundamentos del desarrollo web moderno.", "Carlos Muñoz"),
+            new Curso(92L, "Edición de Audio Digital", "Curso práctico de edición de audio digital.", "Ana Pereira")
         ));
     }
 
