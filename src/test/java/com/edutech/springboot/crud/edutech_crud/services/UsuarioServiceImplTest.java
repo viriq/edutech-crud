@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.edutech.springboot.crud.edutech_crud.entities.Curso;
 import com.edutech.springboot.crud.edutech_crud.entities.Usuario;
 import com.edutech.springboot.crud.edutech_crud.repository.UsuarioRepository;
 
@@ -55,6 +57,78 @@ public class UsuarioServiceImplTest {
         list.add(user3);
         
     }
+
+    @Test 
+    public void findByIdTest() {
+        Long id = 88L;
+        String nombreCompleto = "Francisco Rojas";
+        String email = "fran.rojas@outlook.cl";
+        String contrasena = "fr4ncisc0";
+        String tipoUsuario = "Estudiante";
+
+        Usuario unUsuario = new Usuario(id, nombreCompleto, email, contrasena, tipoUsuario);
+
+        when(repository.findById(id)).thenReturn(Optional.of(unUsuario));
+        Optional<Usuario> response = service.findById(id);
+        assertTrue(response.isPresent());
+        assertEquals(id, response.get().getId());
+
+        verify(repository, times(1)).findById(id);
+
+    }
+
+    @Test
+    public void findByIdNoEncontrado(){
+        Long id = 33L;
+        when(repository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<Usuario> response = service.findById(id);
+        assertTrue(response.isEmpty());
+
+        verify(repository, times(1)).findById(id);
+
+    }
+
+    @Test
+    public void saveTest(){
+        Usuario unUsuario = new Usuario(null, "Juana Contreras", "jua.con@gmail.com", "jks466301js", "Profesora");
+        Usuario otroUsuario = new Usuario(31L, unUsuario.getNombreCompleto(), unUsuario.getEmail(), unUsuario.getContrasena(), unUsuario.getTipoUsuario());
+
+        when(repository.save(unUsuario)).thenReturn(otroUsuario);
+
+        Usuario response = service.save(unUsuario);
+        assertNotNull(response);
+        assertNotNull(response.getNombreCompleto());
+        assertEquals(otroUsuario.getId(), response.getId());
+
+        verify(repository, times(1)).save(unUsuario);
+        
+    }
+
+
+    @Test
+    public void eliminarTest(){
+        Usuario unUsuario = new Usuario(9L, "Javier Altamirano", "altamicrack@udech.cl", "theonepieceisreal", "Estudiante");
+
+        when(repository.findById(unUsuario.getId())).thenReturn(Optional.of(unUsuario));
+
+        Optional<Usuario> response = service.delete(unUsuario);
+        assertTrue(response.isPresent());
+        assertEquals(unUsuario.getId(), response.get().getId());
+
+        verify(repository, times(1)).findById(unUsuario.getId());
+        verify(repository, times(1)).delete(unUsuario);
+
+    }
+
+
+
+
+
+
+
+
+
 
     
 
