@@ -1,8 +1,10 @@
 package com.edutech.springboot.crud.edutech_crud.restcontrollers;
 
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -55,6 +57,17 @@ public class CursoRestControllerTest {
         catch(Exception ex) {
             fail("Test 'verCursoTest' lanzó un error: " + ex.getMessage());
         }
+    }
+
+    @Test
+    public void cursoSaveTest() throws Exception {
+        Curso inputCurso = new Curso(null, "Arte y Código", "Taller de programación creativa con Python y arte generativo.", "Martín Reyes");
+        Curso outputCurso = new Curso(45L, inputCurso.getTitulo(), inputCurso.getDescripción(), inputCurso.getNombreInstructor());
+        when(cursoServiceImpl.save(any(Curso.class))).thenReturn(outputCurso);
+        mockMvc.perform(post("/api/cursos")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(inputCurso)))
+            .andExpect(status().isCreated());
     }
 
 }
