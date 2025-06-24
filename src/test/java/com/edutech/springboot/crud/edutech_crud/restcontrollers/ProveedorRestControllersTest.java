@@ -46,7 +46,7 @@ public class ProveedorRestControllersTest {
         Proveedor unProveedor = new Proveedor(1L, "76.124.876-5", "Muebles para oficina Valledor", "mueblesvalledor@gmail.com", "Venta de muebles");
         try {
             when(proveedorServiceImpl.findById(1L)).thenReturn(Optional.of(unProveedor));
-            mockMvc.perform(get("/api/proveedor/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+            mockMvc.perform(get("/api/proveedores/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
         } catch (Exception ex) {
             fail("El testing lanzó un error " + ex.getMessage());
         }
@@ -55,7 +55,7 @@ public class ProveedorRestControllersTest {
     @Test
     public void proveedorNoExisteTest() throws Exception {
         when(proveedorServiceImpl.findById(10L)).thenReturn(Optional.empty());
-        mockMvc.perform(get("/api/proveedor/10").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/proveedores/10").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ProveedorRestControllersTest {
         Proveedor unProveedor = new Proveedor(4L, "76.124.876-5", "Muebles para oficina Valledor", "mueblesvalledor@gmail.com", "Venta de muebles");
         Proveedor otroProveedor = new Proveedor(null, "87.324.765-6", "Artículos de oficina López", "articuloslopez@gmail.com", "Venta de artículos de oficina");
         when(proveedorServiceImpl.save(any(Proveedor.class))).thenReturn(otroProveedor);
-        mockMvc.perform(post("/api/proveedor").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(unProveedor))).andExpect(status().isCreated());
-
+        mockMvc.perform(post("/api/proveedores").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(unProveedor))).andExpect(status().isCreated());
     }
+
 }
