@@ -114,7 +114,7 @@ public class UsuarioRestControllersTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(22L))
             .andExpect(jsonPath("$.nombreCompleto").value(existingUsuario.getNombreCompleto()))
-            .andExpect(jsonPath("$.tipoUsuarior").value(otroUsuario.getTipoUsuario()));
+            .andExpect(jsonPath("$.tipoUsuario").value(otroUsuario.getTipoUsuario()));
     }
 
 
@@ -146,7 +146,7 @@ public class UsuarioRestControllersTest {
 
         when(usuarioserviceimpl.delete(any(Usuario.class))).thenReturn(Optional.empty());
         mockmvc.perform(delete("/api/usuarios/78"))
-        .andExpect(status().isOk());
+        .andExpect(status().isNotFound());
     }
 
 
