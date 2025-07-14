@@ -18,6 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edutech.springboot.crud.edutech_crud.entities.Curso;
 import com.edutech.springboot.crud.edutech_crud.services.CursoService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Cursos", description = "Operaciones REST relacionadas con Cursos")
 @RestController
 @RequestMapping("api/cursos")
 public class CursoRestController {
@@ -25,11 +33,21 @@ public class CursoRestController {
     @Autowired
     private CursoService cursoService;
 
+    @Operation(summary = "Obtener lista de cursos", description = "Devuelve todos los cursos disponibles")
+    @ApiResponse(responseCode = "200", description = "Lista de cursos retornada correctamente",
+        content = @Content(mediaType = "application/json",
+        schema = @Schema(implementation = Curso.class)))
     @GetMapping
     public List<Curso> list() {
         return cursoService.findByAll();
     }
 
+    @Operation(summary = "Obtener curso por ID", description = "Devuelve el detalle de un curso específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Curso encontrado",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Curso.class))),
+        @ApiResponse(responseCode = "404", description = "Curso no encontrado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<?> verCurso(@PathVariable Long id) {
         Optional<Curso> cursoOptional = cursoService.findById(id);
@@ -39,11 +57,20 @@ public class CursoRestController {
         return ResponseEntity.notFound().build();
     }
     
+    @Operation(summary = "Crear un nuevo curso", description = "Crea un curso con los datos proporcionados")
+    @ApiResponse(responseCode = "201", description = "Curso creado correctamente",
+        content = @Content(mediaType = "application/json", schema = @Schema(implementation = Curso.class)))
     @PostMapping
     public ResponseEntity<Curso> crear(@RequestBody Curso curso) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.save(curso));
     }
 
+    @Operation(summary = "Modificar un curso", description = "Actualiza los datos del curso con datos proporcionados")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Curso modificado",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Curso.class))),
+        @ApiResponse(responseCode = "404", description = "Curso no encontrado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<?> modificar(@PathVariable long id, @RequestBody Curso curso) {
         Optional<Curso> cursoOptional = cursoService.findById(id);
@@ -62,6 +89,12 @@ public class CursoRestController {
         return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Eliminar un curso", description = "Elimina un curso específico")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Curso eliminado",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Curso.class))),
+        @ApiResponse(responseCode = "404", description = "Curso no encontrado")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminar(@PathVariable long id) {
         Curso unCurso = new Curso();
